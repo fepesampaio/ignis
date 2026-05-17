@@ -1,0 +1,70 @@
+project_id = "fteosxivqodhnaikesht"
+
+[functions.create-student]
+verify_jwt = false
+
+[functions.generate-certificate]
+verify_jwt = false
+
+[functions.validate-certificate]
+verify_jwt = false
+
+[functions.get-student-payments]
+verify_jwt = false
+
+[functions.process-payment]
+verify_jwt = false
+
+[functions.send-contract]
+verify_jwt = false
+
+[functions.assinafy-webhook]
+verify_jwt = false
+
+[functions.check-student-access]
+verify_jwt = false
+
+[functions.asaas-webhook]
+verify_jwt = false
+
+[functions.import-bunny-videos]
+verify_jwt = false
+
+[functions.delete-user]
+verify_jwt = false
+
+[functions.parse-moodle-backup]
+verify_jwt = false
+
+[functions.create-employee]
+verify_jwt = false
+
+[functions.update-user-role]
+verify_jwt = false
+
+[functions.update-user-access]
+verify_jwt = false
+
+[functions.get-polo-commissions]
+verify_jwt = false
+
+[functions.get-polo-student-payments]
+verify_jwt = false
+
+[functions.reprocess-enrollment-payments]
+verify_jwt = false
+
+[functions.reset-demo-polo]
+verify_jwt = false
+
+[functions.import-vimeo-videos]
+verify_jwt = false
+
+[functions.auto-grade-submissions]
+verify_jwt = false
+
+[functions.evaluate-paper]
+verify_jwt = false
+
+[functions.get-enrollment-declaration-data]
+verify_jwt = false
