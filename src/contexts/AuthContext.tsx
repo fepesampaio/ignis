@@ -46,13 +46,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [accessStatus, setAccessStatus] = useState<AccessStatus | null>(null);
+  const recoveryStorageKey = 'auth-recovery-mode';
 
   const detectRecoveryModeFromUrl = () => {
     if (typeof window === 'undefined') return false;
 
     const hash = window.location.hash || '';
     const params = new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash);
-    return params.get('type') === 'recovery';
+    return (
+      params.get('type') === 'recovery' ||
+      (params.has('access_token') && params.get('type') === 'recovery')
+    );
+  };
+
+  const persistRecoveryMode = (enabled: boolean) => {
+    if (typeof window === 'undefined') return;
+    if (enabled) {
+      window.sessionStorage.setItem(recoveryStorageKey, 'true');
+    } else {
+      window.sessionStorage.removeItem(recoveryStorageKey);
+    }
+  };
+
+  const getPersistedRecoveryMode = () => {
+    if (typeof window === 'undefined') return false;
+    return window.sessionStorage.getItem(recoveryStorageKey) === 'true';
   };
 
   const fetchUserRole = async (userId: string) => {
@@ -96,11 +114,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    if (detectRecoveryModeFromUrl()) {
+      persistRecoveryMode(true);
+      setIsRecoveryMode(true);
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        setIsRecoveryMode(event === 'PASSWORD_RECOVERY' || detectRecoveryModeFromUrl());
+        const recoveryMode = event === 'PASSWORD_RECOVERY' || detectRecoveryModeFromUrl() || getPersistedRecoveryMode();
+        setIsRecoveryMode(recoveryMode);
+        persistRecoveryMode(recoveryMode);
 
         if (session?.user) {
           setTimeout(() => {
@@ -109,7 +134,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           setRole(null);
           setAccessStatus(null);
-          setIsRecoveryMode(detectRecoveryModeFromUrl());
+          const recoveryMode = detectRecoveryModeFromUrl() || getPersistedRecoveryMode();
+          setIsRecoveryMode(recoveryMode);
+          persistRecoveryMode(recoveryMode);
         }
 
         setLoading(false);
@@ -119,7 +146,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setIsRecoveryMode(detectRecoveryModeFromUrl());
+      const recoveryMode = detectRecoveryModeFromUrl() || getPersistedRecoveryMode();
+      setIsRecoveryMode(recoveryMode);
+      persistRecoveryMode(recoveryMode);
 
       if (session?.user) {
         fetchUserRole(session.user.id).then(setRole);
@@ -173,6 +202,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.updateUser({ password });
     if (!error) {
       setIsRecoveryMode(false);
+      persistRecoveryMode(false);
     }
     return { error: error as Error | null };
   };
@@ -183,6 +213,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
     setRole(null);
     setIsRecoveryMode(false);
+    persistRecoveryMode(false);
     setAccessStatus(null);
   };
 
