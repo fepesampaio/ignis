@@ -11,6 +11,7 @@ interface DeclarationData {
   enrollmentId: string;
   enrolledAt: string;
   lastPaymentDueDate: string | null;
+  logoUrl?: string;
 }
 
 const OWNER_PASSWORD = 'Wusho1467+';
@@ -50,6 +51,38 @@ function addMonthsToDate(dateStr: string, months: number): string {
 async function loadImageBytes(src: string): Promise<Uint8Array> {
   const res = await fetch(src);
   return new Uint8Array(await res.arrayBuffer());
+}
+
+async function loadPngBytesFromUrl(src: string): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas context unavailable'));
+          return;
+        }
+        ctx.drawImage(img, 0, 0);
+        const dataUrl = canvas.toDataURL('image/png');
+        const base64 = dataUrl.split(',')[1];
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        resolve(bytes);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
 }
 
 /** Draw a mixed bold/regular line. Segments alternate: regular, bold, regular, bold... */
@@ -174,6 +207,7 @@ export async function generateDeclarationPDF(data: DeclarationData): Promise<voi
   const navy = rgb(0.024, 0.051, 0.278);
   const darkText = rgb(0.15, 0.15, 0.15);
   const grayText = rgb(0.35, 0.35, 0.35);
+  const declarationLogoUrl = data.logoUrl || LOGO_URL;
 
   const centerText = (text: string, font: PDFFont, size: number, yPos: number, color = grayText) => {
     const tw = font.widthOfTextAtSize(text, size);
@@ -182,7 +216,7 @@ export async function generateDeclarationPDF(data: DeclarationData): Promise<voi
 
   // ===== WATERMARK (behind everything) =====
   try {
-    const wmBytes = await loadImageBytes(LOGO_URL);
+    const wmBytes = await loadPngBytesFromUrl(declarationLogoUrl);
     const wmImage = await pdfDoc.embedPng(wmBytes);
     const wmTargetW = 320;
     const wmScale = wmTargetW / wmImage.width;
@@ -218,7 +252,7 @@ export async function generateDeclarationPDF(data: DeclarationData): Promise<voi
 
   // Logo inside navy header (white on dark)
   try {
-    const logoBytes = await loadImageBytes(LOGO_URL);
+    const logoBytes = await loadPngBytesFromUrl(declarationLogoUrl);
     const logoImage = await pdfDoc.embedPng(logoBytes);
     const logoScale = 42 / logoImage.height;
     const logoW = logoImage.width * logoScale;

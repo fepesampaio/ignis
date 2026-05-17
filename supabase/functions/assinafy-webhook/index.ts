@@ -123,6 +123,7 @@ serve(async (req) => {
     }
 
     console.log("Found enrollment:", enrollment.id);
+    const paymentsAlreadyExistMessage = "Contract signed, payments already existed and access email was processed";
 
     // Get profile for student
     const { data: profile } = await supabase
@@ -159,14 +160,19 @@ serve(async (req) => {
       .eq("user_id", enrollment.user_id)
       .eq("course_id", enrollment.course_id)
       .limit(1);
+    const paymentsAlreadyExist = Boolean(existingPayments && existingPayments.length > 0);
+    console.log("Payments already exist for this enrollment:", paymentsAlreadyExist);
 
-    if (existingPayments && existingPayments.length > 0) {
-      console.log("Payments already exist for this enrollment");
-      return new Response(
-        JSON.stringify({ success: true, message: "Contract signed, payments already exist" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const { data: existingCompletionNotification } = await supabase
+      .from("notifications")
+      .select("id")
+      .eq("user_id", enrollment.user_id)
+      .eq("related_id", enrollment.id)
+      .eq("related_type", "enrollment")
+      .eq("title", "Contrato Assinado!")
+      .limit(1)
+      .maybeSingle();
+    const shouldSendWelcomeEmail = !existingCompletionNotification;
 
     // Payment values from course or defaults
     const monthlyValue = course?.installment_price || 150;
@@ -261,7 +267,7 @@ serve(async (req) => {
     }
 
     // Create payment installments in Asaas
-    if (customerId) {
+    if (customerId && !paymentsAlreadyExist) {
       const today = new Date();
       const paymentsToCreate = [];
       
@@ -361,8 +367,19 @@ serve(async (req) => {
         .eq("id", enrollment.id);
     }
 
+    if (paymentsAlreadyExist) {
+      await supabase
+        .from("enrollments")
+        .update({
+          access_blocked: false,
+          payment_status: "active",
+          block_reason: null,
+        })
+        .eq("id", enrollment.id);
+    }
+
     // Send welcome email with credentials
-    if (resendApiKey && profile) {
+    if (shouldSendWelcomeEmail && resendApiKey && profile) {
       try {
         console.log("Sending welcome email after contract signature...");
         const resend = new Resend(resendApiKey);
@@ -416,9 +433,12 @@ serve(async (req) => {
       } catch (emailError) {
         console.error("Failed to send welcome email:", emailError);
       }
+    } else if (!shouldSendWelcomeEmail) {
+      console.log("Welcome email already processed for this enrollment, skipping");
     }
 
     // Create notification for student
+    if (!existingCompletionNotification) {
     await supabase
       .from("notifications")
       .insert({
@@ -430,10 +450,12 @@ serve(async (req) => {
         related_type: "enrollment",
       });
 
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Contract processed, payments created, welcome email sent",
+        message: paymentsAlreadyExist ? paymentsAlreadyExistMessage : "Contract processed, payments created, welcome email sent",
         split_info: polo && splitPercentage > 0 ? {
           polo_name: polo.name,
           polo_wallet_id: polo.wallet_id,

@@ -9,6 +9,7 @@ import { Search, FileText, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { generateDeclarationPDF } from '@/lib/generateDeclaration';
+import { useSystemSettings } from '@/hooks/useSystemSettings';
 
 interface StudentResult {
   userId: string;
@@ -42,6 +43,7 @@ const calculateDefaultConclusionDate = (enrolledAt: string) => {
 };
 
 export default function EnrollmentDeclaration() {
+  const { settings } = useSystemSettings();
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<StudentResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -151,6 +153,7 @@ export default function EnrollmentDeclaration() {
         enrollmentId: enrollment.id,
         enrolledAt: enrollment.enrolledAt,
         lastPaymentDueDate: lastDueDate,
+        logoUrl: settings.platform_logo_url || undefined,
       });
 
       toast.success('Declaração gerada com sucesso!');

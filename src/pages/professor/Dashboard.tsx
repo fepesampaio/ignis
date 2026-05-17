@@ -3,6 +3,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { StatsCard } from '@/components/ui/stats-card';
 import { ClipboardList, Bot, UserCheck, BarChart3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardMetrics {
   pending: number;
@@ -11,23 +12,49 @@ interface DashboardMetrics {
 }
 
 export default function ProfessorDashboard() {
+  const { user } = useAuth();
   const [metrics, setMetrics] = useState<DashboardMetrics>({ pending: 0, autoGraded: 0, manualGraded: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchMetrics() {
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
+
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+
+      const { data: assignments, error: assignmentsError } = await supabase
+        .from('assignments')
+        .select('id');
+
+      if (assignmentsError) {
+        console.error(assignmentsError);
+        setLoading(false);
+        return;
+      }
+
+      const assignmentIds = (assignments || []).map((assignment) => assignment.id);
+
+      if (assignmentIds.length === 0) {
+        setMetrics({ pending: 0, autoGraded: 0, manualGraded: 0 });
+        setLoading(false);
+        return;
+      }
 
       const [pendingRes, gradedRes] = await Promise.all([
         supabase
           .from('assignment_submissions')
           .select('id', { count: 'exact', head: true })
+          .in('assignment_id', assignmentIds)
           .is('graded_at', null),
         supabase
           .from('assignment_submissions')
           .select('id, graded_by')
+          .in('assignment_id', assignmentIds)
           .not('graded_at', 'is', null)
           .gte('graded_at', startOfMonth)
           .lte('graded_at', endOfMonth),
@@ -43,7 +70,7 @@ export default function ProfessorDashboard() {
     }
 
     fetchMetrics();
-  }, []);
+  }, [user?.id]);
 
   const total = metrics.autoGraded + metrics.manualGraded;
 

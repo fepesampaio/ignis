@@ -56,32 +56,14 @@ export default function ProfessorSubmissions() {
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionWithDetails | null>(null);
   const [gradeDialogOpen, setGradeDialogOpen] = useState(false);
 
-  // Fetch courses where professor is assigned
-  const { data: professorCourses } = useQuery({
-    queryKey: ['professor-courses', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return [];
-      const { data, error } = await supabase
-        .from('course_professors')
-        .select('course_id')
-        .eq('professor_id', user.id);
-      if (error) throw error;
-      return data.map(cp => cp.course_id);
-    },
-    enabled: !!user?.id,
-  });
-
   // Fetch all submissions for professor's courses
   const { data: submissions, isLoading } = useQuery({
-    queryKey: ['professor-submissions', professorCourses],
+    queryKey: ['professor-submissions', user?.id],
     queryFn: async () => {
-      if (!professorCourses || professorCourses.length === 0) return [];
-
       const { data: assignmentsData, error: assignmentsError } = await supabase
         .from('assignments')
         .select('id, title, max_score, due_date, course_id, subject_id')
-        .in('course_id', professorCourses)
-        .eq('is_active', true);
+        .order('created_at', { ascending: false });
 
       if (assignmentsError) throw assignmentsError;
       if (!assignmentsData || assignmentsData.length === 0) return [];
@@ -151,7 +133,7 @@ export default function ProfessorSubmissions() {
 
       return fullSubmissions;
     },
-    enabled: !!professorCourses && professorCourses.length > 0,
+    enabled: !!user?.id,
     refetchOnWindowFocus: true,
     staleTime: 30_000,
   });
