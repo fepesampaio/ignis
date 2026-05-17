@@ -634,7 +634,7 @@ export function CreateStudentDialog({ open, onOpenChange }: CreateStudentDialogP
                   )}
                 />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="sex"
@@ -705,7 +705,7 @@ export function CreateStudentDialog({ open, onOpenChange }: CreateStudentDialogP
                 </div>
                 <Separator />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="cep"
@@ -755,7 +755,7 @@ export function CreateStudentDialog({ open, onOpenChange }: CreateStudentDialogP
                   )}
                 />
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <FormField
                     control={form.control}
                     name="neighborhood"
@@ -819,7 +819,7 @@ export function CreateStudentDialog({ open, onOpenChange }: CreateStudentDialogP
                 </div>
                 <Separator />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="whatsapp"

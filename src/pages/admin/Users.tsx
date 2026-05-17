@@ -209,7 +209,7 @@ export default function AdminUsers() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
           <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setRoleFilter('all')}>
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">

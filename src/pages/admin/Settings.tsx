@@ -236,7 +236,7 @@ export default function AdminSettings() {
         </div>
 
         <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto gap-2">
             <TabsTrigger value="general" className="flex items-center gap-2">
               <Palette className="w-4 h-4" />
               Geral

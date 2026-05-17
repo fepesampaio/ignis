@@ -165,14 +165,14 @@ export function SubmitAssignmentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{assignment.title}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           {/* Assignment Info */}
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
             <span className="text-muted-foreground">
               Valor: <strong>{assignment.max_score} pontos</strong>
             </span>
@@ -193,7 +193,7 @@ export function SubmitAssignmentDialog({
                   ? "bg-destructive/10 border-destructive/30" 
                   : "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
               )}>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-2">
                     {hasFailed ? (
                       <>

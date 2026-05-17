@@ -360,7 +360,7 @@ export default function SubjectContent() {
           </Card>
         ) : (
           <Tabs defaultValue="lessons" className="space-y-4">
-            <TabsList className="grid grid-cols-5 w-full max-w-3xl">
+            <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full max-w-3xl h-auto gap-2">
               <TabsTrigger value="lessons" className="gap-2">
                 <BookOpen className="h-4 w-4" />
                 <span className="hidden sm:inline">Aulas</span> ({lessons.length})

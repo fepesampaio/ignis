@@ -271,7 +271,7 @@ export function PaymentDialog({ open, onOpenChange, payment, onSuccess }: Paymen
           </div>
 
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 h-auto gap-2">
               <TabsTrigger value="pix" className="gap-2">
                 <QrCode className="w-4 h-4" />
                 PIX
@@ -388,7 +388,7 @@ export function PaymentDialog({ open, onOpenChange, payment, onSuccess }: Paymen
                       )}
                     />
 
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <FormField
                         control={form.control}
                         name="expiry_month"
@@ -453,7 +453,7 @@ export function PaymentDialog({ open, onOpenChange, payment, onSuccess }: Paymen
                   <div className="pt-4 border-t border-border space-y-4">
                     <h4 className="font-medium text-sm text-foreground">Dados do Titular</h4>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <FormField
                         control={form.control}
                         name="cpf_cnpj"
@@ -488,7 +488,7 @@ export function PaymentDialog({ open, onOpenChange, payment, onSuccess }: Paymen
                       />
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <FormField
                         control={form.control}
                         name="postal_code"

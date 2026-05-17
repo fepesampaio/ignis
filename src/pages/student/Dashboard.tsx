@@ -306,11 +306,11 @@ export default function StudentDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Courses */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h2 className="text-xl font-display font-semibold text-foreground">
               Meus Cursos
             </h2>
-            <Button variant="outline" onClick={handleViewAll}>
+            <Button variant="outline" onClick={handleViewAll} className="w-full sm:w-auto">
               Ver Todos
             </Button>
           </div>

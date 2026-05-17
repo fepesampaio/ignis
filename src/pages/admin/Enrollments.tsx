@@ -392,7 +392,7 @@ export default function AdminEnrollments() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter('all')}>
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">
@@ -459,7 +459,7 @@ export default function AdminEnrollments() {
             />
           </div>
           <Select value={courseFilter} onValueChange={setCourseFilter}>
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-full sm:w-[200px]">
               <SelectValue placeholder="Filtrar por curso" />
             </SelectTrigger>
             <SelectContent>
@@ -472,7 +472,7 @@ export default function AdminEnrollments() {
             </SelectContent>
           </Select>
           <Select value={poloFilter} onValueChange={setPoloFilter}>
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-full sm:w-[200px]">
               <SelectValue placeholder="Filtrar por polo" />
             </SelectTrigger>
             <SelectContent>
@@ -487,7 +487,7 @@ export default function AdminEnrollments() {
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-full sm:w-[150px]">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>

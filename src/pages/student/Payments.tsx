@@ -334,7 +334,7 @@ export default function StudentPayments() {
                             </Badge>
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <CreditCard className="w-4 h-4" />
                               {billingTypeLabels[payment.billing_type || ''] || payment.payment_method || 'Boleto'}

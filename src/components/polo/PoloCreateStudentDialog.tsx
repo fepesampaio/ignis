@@ -522,7 +522,7 @@ export function PoloCreateStudentDialog({ open, onOpenChange, poloInfo, onSucces
                   )}
                 />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="sex"
@@ -605,7 +605,7 @@ export function PoloCreateStudentDialog({ open, onOpenChange, poloInfo, onSucces
                 </div>
                 <Separator />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="cep"
@@ -668,7 +668,7 @@ export function PoloCreateStudentDialog({ open, onOpenChange, poloInfo, onSucces
                   )}
                 />
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <FormField
                     control={form.control}
                     name="neighborhood"
@@ -732,7 +732,7 @@ export function PoloCreateStudentDialog({ open, onOpenChange, poloInfo, onSucces
                 </div>
                 <Separator />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="whatsapp"

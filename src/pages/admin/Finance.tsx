@@ -291,6 +291,7 @@ export default function AdminFinance() {
 
       {/* Payments Table */}
       <div className="card-elevated overflow-hidden">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -352,6 +353,7 @@ export default function AdminFinance() {
             )}
           </TableBody>
         </Table>
+        </div>
         <AdminPagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
       </div>
     </DashboardLayout>

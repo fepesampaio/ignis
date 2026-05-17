@@ -179,7 +179,7 @@ export function GradeSubmissionDialog({ open, onOpenChange, submission }: GradeS
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
@@ -193,15 +193,15 @@ export function GradeSubmissionDialog({ open, onOpenChange, submission }: GradeS
 
         <div className="space-y-4">
           {/* Student Info */}
-          <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-muted rounded-lg">
+            <div className="flex items-center gap-3 min-w-0">
               <User className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="font-medium">{submission.profile.full_name}</p>
                 <p className="text-sm text-muted-foreground">{submission.profile.email}</p>
               </div>
             </div>
-            <div className="text-right text-sm text-muted-foreground">
+            <div className="text-left sm:text-right text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 Enviado {format(new Date(submission.submitted_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
@@ -229,7 +229,7 @@ export function GradeSubmissionDialog({ open, onOpenChange, submission }: GradeS
 
           {/* AI Evaluate Button */}
           {!isGraded && (
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 type="button"
                 variant="outline"
@@ -310,7 +310,7 @@ export function GradeSubmissionDialog({ open, onOpenChange, submission }: GradeS
                   <blockquote className="border-l-4 border-primary pl-4 italic text-muted-foreground">
                     {aiEvaluation.feedback}
                   </blockquote>
-                  <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                     <Button size="sm" variant="outline" className="gap-1" onClick={() => copyFeedback(aiEvaluation.feedback)}>
                       <Copy className="h-3 w-3" /> Copiar feedback
                     </Button>
@@ -328,7 +328,7 @@ export function GradeSubmissionDialog({ open, onOpenChange, submission }: GradeS
           {/* Manual Grading Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <h3 className="font-semibold">Correção {aiEvaluation ? '(ajuste manual)' : 'Manual'}</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="score">Nota *</Label>
                 <div className="flex items-center gap-2">

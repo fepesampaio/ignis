@@ -221,7 +221,7 @@ export default function PoloStudentPayments() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-4">
               {isLoading ? (
@@ -404,7 +404,7 @@ export default function PoloStudentPayments() {
                         </div>
 
                         {/* Payment Summary */}
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <div className="p-3 rounded-lg bg-green-500/10 text-center">
                             <p className="text-lg font-bold text-green-600">
                               {formatCurrency(student.summary.total_paid)}

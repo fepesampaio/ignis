@@ -376,9 +376,9 @@ export default function CertificateDownload() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background p-8">
+      <div className="min-h-screen bg-background p-4 sm:p-8">
         <Card className="max-w-md mx-auto">
-          <CardContent className="p-8">
+          <CardContent className="p-6 sm:p-8">
             <Skeleton className="h-32 w-full" />
           </CardContent>
         </Card>
@@ -389,7 +389,7 @@ export default function CertificateDownload() {
   if (!certificate) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card>
+        <Card className="w-full max-w-md mx-4">
           <CardContent className="py-12 text-center">
             <h2 className="text-xl font-medium mb-4">Certificado não encontrado</h2>
             <Button onClick={() => navigate('/student/certificates')}>
@@ -404,7 +404,7 @@ export default function CertificateDownload() {
   return (
     <div className="min-h-screen bg-muted p-4 md:p-8 flex items-center justify-center">
       <Card className="max-w-md w-full">
-        <CardContent className="p-8 text-center space-y-6">
+        <CardContent className="p-6 sm:p-8 text-center space-y-6">
           <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
             <Award className="w-8 h-8 text-primary" />
           </div>

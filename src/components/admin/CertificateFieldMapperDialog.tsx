@@ -562,7 +562,7 @@ export function CertificateFieldMapperDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Mapear Campos do Certificado</DialogTitle>
           <DialogDescription>
@@ -923,7 +923,7 @@ export function CertificateFieldMapperDialog({
                             <div>
                               <Label className="text-xs mb-2 block">Ajustar Posição</Label>
                               <div className="flex items-center justify-center gap-1">
-                                <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
                                   <div />
                                   <Button
                                     variant="outline"
@@ -967,7 +967,7 @@ export function CertificateFieldMapperDialog({
                               </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                               <div>
                                 <Label className="text-xs">X (%)</Label>
                                 <Input
@@ -994,7 +994,7 @@ export function CertificateFieldMapperDialog({
                               </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                               <div>
                                 <Label className="text-xs">Tamanho da Fonte</Label>
                                 <Input
