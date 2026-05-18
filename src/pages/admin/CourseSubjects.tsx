@@ -279,8 +279,8 @@ export default function CourseSubjects() {
                 } ${subject.is_certificate_instructions ? "border-amber-500" : "hover:shadow-md"}`}
               >
                 <CardContent className="p-4">
-                  <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
-                    <div className="flex items-start gap-4">
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
                       {!subject.is_certificate_instructions && (
                         <div className="flex flex-shrink-0 flex-col items-center gap-0.5">
                           <Button
@@ -375,8 +375,7 @@ export default function CourseSubjects() {
                       </div>
                     </div>
 
-                    <div className="flex flex-1 flex-col gap-4 xl:flex-row xl:items-center xl:justify-end">
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1" title="Aulas">
                           <BookOpen className="h-4 w-4" />
                           <span>{subjectCounts[subject.id]?.lessons || 0}</span>
@@ -399,12 +398,13 @@ export default function CourseSubjects() {
                             <span>{subject.release_after_days}d</span>
                           </div>
                         )}
-                      </div>
+                    </div>
 
-                      <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <Button
                           variant="outline"
                           size="sm"
+                          className="w-full sm:w-auto"
                           onClick={() => navigate(`${basePath}/courses/${courseId}/subjects/${subject.id}`)}
                         >
                           Gerenciar
@@ -441,7 +441,6 @@ export default function CourseSubjects() {
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(subject)}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
-                      </div>
                     </div>
                   </div>
                 </CardContent>
