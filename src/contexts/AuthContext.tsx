@@ -35,6 +35,7 @@ interface AuthContextType {
   updatePassword: (password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   checkAccess: () => Promise<AccessStatus | null>;
+  signInWithBiometrics: () => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,6 +94,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const syncAuthState = async (event: string | null, nextSession: Session | null) => {
+    setLoading(true);
+    setSession(nextSession);
+    setUser(nextSession?.user ?? null);
+
+    const recoveryMode =
+      event === 'PASSWORD_RECOVERY' ||
+      detectRecoveryModeFromUrl() ||
+      getPersistedRecoveryMode();
+
+    setIsRecoveryMode(recoveryMode);
+    persistRecoveryMode(recoveryMode);
+
+    if (nextSession?.user) {
+      const nextRole = await fetchUserRole(nextSession.user.id);
+      setRole(nextRole);
+    } else {
+      setRole(null);
+      setAccessStatus(null);
+    }
+
+    setLoading(false);
+  };
+
   const checkAccess = async (): Promise<AccessStatus | null> => {
     if (!session) return null;
 
@@ -121,40 +146,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        const recoveryMode = event === 'PASSWORD_RECOVERY' || detectRecoveryModeFromUrl() || getPersistedRecoveryMode();
-        setIsRecoveryMode(recoveryMode);
-        persistRecoveryMode(recoveryMode);
-
-        if (session?.user) {
-          setTimeout(() => {
-            fetchUserRole(session.user.id).then(setRole);
-          }, 0);
-        } else {
-          setRole(null);
-          setAccessStatus(null);
-          const recoveryMode = detectRecoveryModeFromUrl() || getPersistedRecoveryMode();
-          setIsRecoveryMode(recoveryMode);
-          persistRecoveryMode(recoveryMode);
-        }
-
-        setLoading(false);
+        void syncAuthState(event, session);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      const recoveryMode = detectRecoveryModeFromUrl() || getPersistedRecoveryMode();
-      setIsRecoveryMode(recoveryMode);
-      persistRecoveryMode(recoveryMode);
-
-      if (session?.user) {
-        fetchUserRole(session.user.id).then(setRole);
-      }
-
-      setLoading(false);
+      void syncAuthState(null, session);
     });
 
     return () => subscription.unsubscribe();
@@ -173,6 +170,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     return { error: error as Error | null };
+  };
+
+  const signInWithBiometrics = async () => {
+    try {
+      const { getBiometricCredentials, verifyBiometricIdentity } = await import('@/lib/nativeAuth');
+      await verifyBiometricIdentity();
+      const credentials = await getBiometricCredentials();
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: credentials.username,
+        password: credentials.password,
+      });
+
+      return { error: error as Error | null };
+    } catch (error) {
+      return { error: error as Error };
+    }
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -232,6 +246,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updatePassword,
         signOut,
         checkAccess,
+        signInWithBiometrics,
       }}
     >
       {children}

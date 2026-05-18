@@ -9,7 +9,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, Download, Loader2, Award } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { toast } from 'sonner';
 
 // Types for multi-page certificate mapping (matching the mapper dialog)
@@ -221,6 +220,7 @@ export default function CertificateDownload() {
 
   const generateMappedPdf = async () => {
     if (!templateUrl || !mappingData || !certificate) return;
+    const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
 
     // Fetch the PDF template
     const templateResponse = await fetch(templateUrl);

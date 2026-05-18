@@ -26,6 +26,8 @@ export const loadStudentPayments = () => import('@/pages/student/Payments');
 export const loadStudentGrades = () => import('@/pages/student/Grades');
 export const loadNotifications = () => import('@/pages/Notifications');
 export const loadValidateCertificate = () => import('@/pages/ValidateCertificate');
+export const loadAbout = () => import('@/pages/About');
+export const loadPrivacyPolicy = () => import('@/pages/PrivacyPolicy');
 
 // Admin
 export const loadAdminDashboard = () => import('@/pages/admin/Dashboard');
@@ -64,6 +66,8 @@ export const ROUTE_LOADERS: Record<string, () => Promise<unknown>> = {
   '/student/payments': loadStudentPayments,
   '/student/certificates': loadStudentCertificates,
   '/notifications': loadNotifications,
+  '/about': loadAbout,
+  '/privacy-policy': loadPrivacyPolicy,
 
   '/admin': loadAdminDashboard,
   '/admin/courses': loadAdminCourses,

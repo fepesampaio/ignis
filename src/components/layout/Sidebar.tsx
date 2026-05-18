@@ -21,13 +21,12 @@ import {
   MessageCircle,
   Building,
   UserCog,
+  Info,
   Menu,
-  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { NotificationBell } from './NotificationBell';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -80,78 +79,85 @@ export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  const navItems = role === 'admin' 
-    ? adminNavItems 
-    : role === 'professor' 
-      ? professorNavItems 
-      : role === 'polo'
-        ? poloNavItems
-        : studentNavItems;
+  const navItems =
+    role === 'admin'
+      ? adminNavItems
+      : role === 'professor'
+        ? professorNavItems
+        : role === 'polo'
+          ? poloNavItems
+          : studentNavItems;
 
   const getRoleLabel = () => {
     switch (role) {
-      case 'admin': return 'Administrador';
-      case 'professor': return 'Professor';
-      case 'polo': return 'Polo';
-      default: return 'Aluno';
+      case 'admin':
+        return 'Administrador';
+      case 'professor':
+        return 'Professor';
+      case 'polo':
+        return 'Polo';
+      default:
+        return 'Aluno';
     }
   };
 
   const SidebarContent = ({ isSheet = false }: { isSheet?: boolean }) => (
     <>
-      {/* Logo */}
-      <div className={cn(
-        "flex items-center border-b border-sidebar-border p-4",
-        collapsed && !isSheet ? "flex-col gap-2" : "justify-between"
-      )}>
+      <div
+        className={cn(
+          'flex items-center border-b border-sidebar-border p-4',
+          collapsed && !isSheet ? 'flex-col gap-2' : 'justify-between'
+        )}
+      >
         {collapsed && !isSheet ? (
           <>
             {settings.platform_logo_url ? (
-              <img 
-                src={settings.platform_logo_url} 
-                alt={settings.platform_name} 
-                className="w-10 h-10 rounded-xl object-contain"
+              <img
+                src={settings.platform_logo_url}
+                alt={settings.platform_name}
+                className="h-10 w-10 rounded-xl object-contain"
                 title={settings.platform_name}
               />
             ) : (
-              <div 
-                className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary to-primary flex items-center justify-center"
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sidebar-primary to-primary"
                 title={settings.platform_name}
               >
-                <GraduationCap className="w-6 h-6 text-sidebar-primary-foreground" />
+                <GraduationCap className="h-6 w-6 text-sidebar-primary-foreground" />
               </div>
             )}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setCollapsed(false)}
-              className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+              className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
               title="Expandir menu"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="h-5 w-5" />
             </Button>
           </>
         ) : (
           <>
             <div className="flex items-center gap-3">
               {settings.platform_logo_url ? (
-                <img 
-                  src={settings.platform_logo_url} 
-                  alt={settings.platform_name} 
-                  className="w-10 h-10 rounded-xl object-contain"
+                <img
+                  src={settings.platform_logo_url}
+                  alt={settings.platform_name}
+                  className="h-10 w-10 rounded-xl object-contain"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary to-primary flex items-center justify-center">
-                  <GraduationCap className="w-6 h-6 text-sidebar-primary-foreground" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sidebar-primary to-primary">
+                  <GraduationCap className="h-6 w-6 text-sidebar-primary-foreground" />
                 </div>
               )}
               <div>
-                <h1 className="font-display font-bold text-sidebar-foreground text-lg">{settings.platform_name}</h1>
+                <h1 className="font-display text-lg font-bold text-sidebar-foreground">
+                  {settings.platform_name}
+                </h1>
                 <p className="text-xs text-sidebar-foreground/60">Sistema de Ensino</p>
               </div>
             </div>
@@ -160,30 +166,27 @@ export function Sidebar() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setCollapsed(true)}
-                className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 title="Recolher menu"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="h-5 w-5" />
               </Button>
             )}
           </>
         )}
       </div>
 
-      {/* User Info */}
       {(!collapsed || isSheet) && (
-        <div className="p-4 border-b border-sidebar-border">
+        <div className="border-b border-sidebar-border p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-sidebar-accent flex items-center justify-center">
-              <span className="text-sidebar-foreground font-medium">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sidebar-accent">
+              <span className="font-medium text-sidebar-foreground">
                 {user?.email?.charAt(0).toUpperCase()}
               </span>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">
-                {user?.email}
-              </p>
-              <span className="inline-block px-2 py-0.5 text-xs rounded-full bg-sidebar-primary/20 text-sidebar-primary mt-1">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-sidebar-foreground">{user?.email}</p>
+              <span className="mt-1 inline-block rounded-full bg-sidebar-primary/20 px-2 py-0.5 text-xs text-sidebar-primary">
                 {getRoleLabel()}
               </span>
             </div>
@@ -191,8 +194,7 @@ export function Sidebar() {
         </div>
       )}
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin">
+      <nav className="scrollbar-thin flex-1 space-y-2 overflow-y-auto p-4">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
@@ -210,15 +212,14 @@ export function Sidebar() {
               onTouchStart={() => prefetchRoute(item.path)}
               title={collapsed && !isSheet ? item.label : undefined}
             >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
+              <item.icon className="h-5 w-5 flex-shrink-0" />
               {(!collapsed || isSheet) && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
-      {/* Notifications, Support & Logout */}
-      <div className="p-4 border-t border-sidebar-border space-y-2">
+      <div className="space-y-2 border-t border-sidebar-border p-4">
         <Link
           to="/notifications"
           className={cn(
@@ -230,89 +231,106 @@ export function Sidebar() {
           title={collapsed && !isSheet ? 'Notificações' : undefined}
         >
           <div className="relative">
-            <Bell className="w-5 h-5 flex-shrink-0" />
+            <Bell className="h-5 w-5 flex-shrink-0" />
             <UnreadBadge collapsed={collapsed && !isSheet} />
           </div>
           {(!collapsed || isSheet) && <span>Notificações</span>}
         </Link>
+
+        <Link
+          to="/about"
+          className={cn(
+            'sidebar-nav-item',
+            location.pathname === '/about' && 'active',
+            collapsed && !isSheet && 'justify-center px-3'
+          )}
+          onClick={isSheet ? () => setMobileOpen(false) : undefined}
+          onMouseEnter={() => prefetchRoute('/about')}
+          onFocus={() => prefetchRoute('/about')}
+          onTouchStart={() => prefetchRoute('/about')}
+          title={collapsed && !isSheet ? 'Sobre' : undefined}
+        >
+          <Info className="h-5 w-5 flex-shrink-0" />
+          {(!collapsed || isSheet) && <span>Sobre</span>}
+        </Link>
+
         <a
           href="https://wa.me/message/LWSEFGTD2JQXI1"
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            'sidebar-nav-item text-green-400 hover:text-green-300 hover:bg-green-500/10',
+            'sidebar-nav-item text-green-400 hover:bg-green-500/10 hover:text-green-300',
             collapsed && !isSheet && 'justify-center px-3'
           )}
           onClick={isSheet ? () => setMobileOpen(false) : undefined}
           title={collapsed && !isSheet ? 'Suporte' : undefined}
         >
-          <MessageCircle className="w-5 h-5 flex-shrink-0" />
+          <MessageCircle className="h-5 w-5 flex-shrink-0" />
           {(!collapsed || isSheet) && <span>Suporte</span>}
         </a>
+
         <button
-          onClick={signOut}
           className={cn(
-            'sidebar-nav-item w-full text-red-400 hover:text-red-300 hover:bg-red-500/10',
+            'sidebar-nav-item w-full text-red-400 hover:bg-red-500/10 hover:text-red-300',
             collapsed && !isSheet && 'justify-center px-3'
           )}
           type="button"
-          {...(isSheet ? { onClick: () => { setMobileOpen(false); signOut(); } } : { onClick: signOut })}
+          onClick={() => {
+            if (isSheet) setMobileOpen(false);
+            void signOut();
+          }}
           title={collapsed && !isSheet ? 'Sair' : undefined}
         >
-          <LogOut className="w-5 h-5 flex-shrink-0" />
+          <LogOut className="h-5 w-5 flex-shrink-0" />
           {(!collapsed || isSheet) && <span>Sair</span>}
         </button>
       </div>
     </>
   );
 
-  // Mobile: use Sheet drawer
   if (isMobile) {
     return (
       <>
-        {/* Mobile Header */}
-        <div className="fixed top-0 left-0 right-0 h-16 bg-gradient-sidebar border-b border-sidebar-border flex items-center justify-between px-4 z-50">
+        <div className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-sidebar-border bg-gradient-sidebar px-4">
           <div className="flex items-center gap-3">
             {settings.platform_logo_url ? (
-              <img 
-                src={settings.platform_logo_url} 
-                alt={settings.platform_name} 
-                className="w-8 h-8 rounded-lg object-contain"
+              <img
+                src={settings.platform_logo_url}
+                alt={settings.platform_name}
+                className="h-8 w-8 rounded-lg object-contain"
               />
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sidebar-primary to-primary flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-sidebar-primary-foreground" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sidebar-primary to-primary">
+                <GraduationCap className="h-5 w-5 text-sidebar-primary-foreground" />
               </div>
             )}
-            <span className="font-display font-bold text-sidebar-foreground">{settings.platform_name}</span>
+            <span className="font-display font-bold text-sidebar-foreground">
+              {settings.platform_name}
+            </span>
           </div>
+
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="text-sidebar-foreground">
-                <Menu className="w-6 h-6" />
+                <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent 
-              side="left" 
-              className="w-72 p-0 bg-gradient-sidebar border-sidebar-border"
-            >
-              <div className="h-full flex flex-col">
+            <SheetContent side="left" className="w-72 border-sidebar-border bg-gradient-sidebar p-0">
+              <div className="flex h-full flex-col">
                 <SidebarContent isSheet />
               </div>
             </SheetContent>
           </Sheet>
         </div>
-        {/* Spacer for fixed header */}
         <div className="h-16" />
       </>
     );
   }
 
-  // Desktop: regular sidebar
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 h-screen bg-gradient-sidebar flex flex-col transition-all duration-300 z-50',
+        'fixed left-0 top-0 z-50 flex h-screen flex-col bg-gradient-sidebar transition-all duration-300',
         collapsed ? 'w-20' : 'w-64'
       )}
     >
@@ -323,7 +341,7 @@ export function Sidebar() {
 
 function UnreadBadge({ collapsed }: { collapsed: boolean }) {
   const { user } = useAuth();
-  
+
   const { data: unreadCount = 0 } = useQuery({
     queryKey: ['unread-notifications-count', user?.id],
     queryFn: async () => {
@@ -331,6 +349,7 @@ function UnreadBadge({ collapsed }: { collapsed: boolean }) {
         .from('notifications')
         .select('*', { count: 'exact', head: true })
         .eq('is_read', false);
+
       if (error) throw error;
       return count || 0;
     },
@@ -341,10 +360,12 @@ function UnreadBadge({ collapsed }: { collapsed: boolean }) {
   if (unreadCount === 0) return null;
 
   return (
-    <span className={cn(
-      "absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-destructive text-destructive-foreground text-[10px] font-bold rounded-full flex items-center justify-center px-1",
-      collapsed && "-top-1 -right-2"
-    )}>
+    <span
+      className={cn(
+        'absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground',
+        collapsed && '-right-2 -top-1'
+      )}
+    >
       {unreadCount > 9 ? '9+' : unreadCount}
     </span>
   );

@@ -292,6 +292,11 @@
     animation: slideInLeft 0.3s ease-out forwards;
   }
 
+  .page-route-transition {
+    animation: pageRouteEnter 0.24s ease-out forwards;
+    will-change: opacity, transform;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -305,6 +310,11 @@
   @keyframes slideInLeft {
     from { opacity: 0; transform: translateX(-20px); }
     to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes pageRouteEnter {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* Hover scale */

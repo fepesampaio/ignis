@@ -27,7 +27,7 @@ export function DashboardLayout({ children, title, subtitle }: DashboardLayoutPr
       <main className={`min-h-screen transition-all duration-300 ${isMobile ? 'ml-0' : collapsed ? 'ml-20' : 'ml-64'}`}>
         <div className="p-4 sm:p-6 lg:p-8">
           {(title || subtitle) && (
-            <header className="mb-6 sm:mb-8 animate-fade-in">
+            <header className="mb-6 sm:mb-8">
               {title && (
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-foreground">
                   {title}
@@ -38,7 +38,7 @@ export function DashboardLayout({ children, title, subtitle }: DashboardLayoutPr
               )}
             </header>
           )}
-          <div className="animate-slide-up">{children}</div>
+          <div>{children}</div>
         </div>
       </main>
     </div>

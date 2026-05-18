@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "216065427106",
+    "project_id": "institutoignis-3d785",
+    "storage_bucket": "institutoignis-3d785.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216065427106:android:57f67ee741153e5e83f9fb",
+        "android_client_info": {
+          "package_name": "com.institutoignis.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmnqdOf1S98sMAStCffCR6er3EUCSiinQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

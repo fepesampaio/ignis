@@ -68,3 +68,6 @@ verify_jwt = false
 
 [functions.get-enrollment-declaration-data]
 verify_jwt = false
+
+[functions.dispatch-notification-push]
+verify_jwt = false

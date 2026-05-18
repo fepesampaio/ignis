@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Search, FileText, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { generateDeclarationPDF } from '@/lib/generateDeclaration';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 
 interface StudentResult {
@@ -144,6 +143,7 @@ export default function EnrollmentDeclaration() {
         }
       }
 
+      const { generateDeclarationPDF } = await import('@/lib/generateDeclaration');
       await generateDeclarationPDF({
         studentName: student.fullName,
         studentCpf: student.cpf,

@@ -26,7 +26,6 @@ import {
   FileDown,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { generateTranscriptPDF } from '@/lib/generateTranscript';
 import { toast } from 'sonner';
 
 interface StudentProfile {
@@ -74,6 +73,7 @@ export function StudentDetailsDialog({ open, onOpenChange, enrollment }: Student
     setGeneratingPdf(true);
     try {
       toast.info('Gerando histórico escolar...');
+      const { generateTranscriptPDF } = await import('@/lib/generateTranscript');
       await generateTranscriptPDF(enrollment.user_id, enrollment.course_id, enrollment.id);
       toast.success('Histórico escolar gerado com sucesso!');
     } catch (err) {

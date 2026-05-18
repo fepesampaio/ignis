@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -15,7 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Mail, Lock, ArrowRight, Eye, EyeOff, MessageCircle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff, MessageCircle, Fingerprint } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Auth() {
@@ -27,9 +28,44 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
-  const { signIn, updatePassword, requestPasswordReset, isRecoveryMode } = useAuth();
+  const [rememberLogin, setRememberLogin] = useState(true);
+  const [biometricEnabled, setBiometricEnabledState] = useState(false);
+  const [biometricAvailable, setBiometricAvailableState] = useState(false);
+  const [biometricLoading, setBiometricLoading] = useState(false);
+  const { signIn, signInWithBiometrics, updatePassword, requestPasswordReset, isRecoveryMode } = useAuth();
   const { settings } = useSystemSettings();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadSavedAuthPrefs = async () => {
+      const { getBiometricEnabled, getRememberedEmail, isBiometricAvailable } = await import('@/lib/nativeAuth');
+      const [rememberedEmail, biometricFlag, biometricReady] = await Promise.all([
+        getRememberedEmail(),
+        getBiometricEnabled(),
+        isBiometricAvailable(),
+      ]);
+
+      if (!mounted) return;
+
+      if (rememberedEmail) {
+        setEmail(rememberedEmail);
+        setRememberLogin(true);
+      }
+
+      setBiometricAvailableState(biometricReady);
+      setBiometricEnabledState(biometricFlag && biometricReady);
+    };
+
+    if (!isRecoveryMode) {
+      void loadSavedAuthPrefs();
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [isRecoveryMode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,11 +97,48 @@ export default function Auth() {
       if (error) {
         toast.error(error.message || 'Erro ao fazer login');
       } else {
+        const {
+          clearBiometricCredentials,
+          isNativeApp,
+          saveBiometricCredentials,
+          setBiometricEnabled,
+          setRememberedEmail,
+        } = await import('@/lib/nativeAuth');
+
+        await setRememberedEmail(rememberLogin ? email : '');
+
+        if (biometricAvailable && isNativeApp()) {
+          if (biometricEnabled) {
+            await saveBiometricCredentials(email, password);
+            await setBiometricEnabled(true);
+          } else {
+            await clearBiometricCredentials();
+            await setBiometricEnabled(false);
+          }
+        }
+
         toast.success('Login realizado com sucesso');
         navigate('/dashboard');
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    setBiometricLoading(true);
+
+    try {
+      const { error } = await signInWithBiometrics();
+      if (error) {
+        toast.error(error.message || 'Erro ao entrar com biometria');
+        return;
+      }
+
+      toast.success('Login realizado com biometria');
+      navigate('/dashboard');
+    } finally {
+      setBiometricLoading(false);
     }
   };
 
@@ -182,6 +255,41 @@ export default function Auth() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </form>
+
+          {!isRecoveryMode && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4 rounded-xl border border-border/60 p-4">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Salvar login neste aparelho</p>
+                  <p className="text-xs text-muted-foreground">Preenche seu e-mail automaticamente no próximo acesso.</p>
+                </div>
+                <Checkbox checked={rememberLogin} onCheckedChange={(checked) => setRememberLogin(checked === true)} />
+              </div>
+
+              {biometricAvailable && (
+                <div className="flex items-center justify-between gap-4 rounded-xl border border-border/60 p-4">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">Entrar com biometria</p>
+                    <p className="text-xs text-muted-foreground">Salva suas credenciais com proteção nativa do aparelho.</p>
+                  </div>
+                  <Checkbox checked={biometricEnabled} onCheckedChange={(checked) => setBiometricEnabledState(checked === true)} />
+                </div>
+              )}
+
+              {biometricAvailable && biometricEnabled && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleBiometricLogin}
+                  disabled={biometricLoading}
+                >
+                  <Fingerprint className="w-4 h-4 mr-2" />
+                  {biometricLoading ? 'Validando...' : 'Entrar com biometria'}
+                </Button>
+              )}
+            </div>
+          )}
 
           {!isRecoveryMode && (
             <div className="text-center">

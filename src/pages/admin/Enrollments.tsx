@@ -63,7 +63,6 @@ import { EnrollStudentDialog } from '@/components/admin/EnrollStudentDialog';
 import { StudentDetailsDialog } from '@/components/admin/StudentDetailsDialog';
 import { EditStudentDialog } from '@/components/admin/EditStudentDialog';
 import { ReprocessPaymentsDialog } from '@/components/admin/ReprocessPaymentsDialog';
-import { generateTranscriptPDF } from '@/lib/generateTranscript';
 
 type EnrollmentWithDetails = {
   id: string;
@@ -615,6 +614,7 @@ export default function AdminEnrollments() {
                               onClick={async () => {
                                 try {
                                   toast.info('Gerando histórico escolar...');
+                                  const { generateTranscriptPDF } = await import('@/lib/generateTranscript');
                                   await generateTranscriptPDF(enrollment.user_id, enrollment.course_id, enrollment.id);
                                   toast.success('Histórico escolar gerado com sucesso!');
                                 } catch (err) {
